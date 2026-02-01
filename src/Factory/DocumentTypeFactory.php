@@ -22,8 +22,8 @@ final class DocumentTypeFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'slug' => self::faker()->unique()->slug(),
-            'name' => self::faker()->words(2, true),
+            'slug' => substr(self::faker()->unique()->slug(), 0, 50),
+            'name' => substr(self::faker()->words(2, true), 0, 100),
             'description' => self::faker()->sentence(),
             'category' => 'general',
         ];

@@ -65,7 +65,7 @@ class Document
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'documents')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['document:read'])]
-    private User $user;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: Template::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -126,6 +126,7 @@ class Document
     {
         $this->id = Uuid::uuid4();
         $this->createdAt = new \DateTimeImmutable();
+        $this->user = null;
     }
 
     public function getId(): UuidInterface
@@ -133,7 +134,7 @@ class Document
         return $this->id;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
