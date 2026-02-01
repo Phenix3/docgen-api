@@ -18,12 +18,13 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use App\Validator\CheckQuota;
 use App\State\DocumentPostProcessor;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
 #[ORM\Table(name: 'document')]
 #[ORM\HasLifecycleCallbacks]
+#[CheckQuota(groups: ['document:create'])]
 #[ApiResource(
     operations: [
         new GetCollection(
@@ -37,6 +38,7 @@ use App\State\DocumentPostProcessor;
         new Post(
             security: "is_granted('ROLE_USER')",
             denormalizationContext: ['groups' => ['document:create']],
+            validationContext: ['groups' => ['Default', 'document:create']],
             securityMessage: "Vous devez être connecté pour créer un document",
             processor: DocumentPostProcessor::class
         ),

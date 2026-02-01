@@ -18,6 +18,6 @@ class CountryCrudController extends AbstractCrudController
     {
         yield IdField::new('id')->hideOnForm();
         yield TextField::new('name', 'Nom');
-        yield TextField::new('code', 'Code ISO (2 lettres)');
+        yield TextField::new('codeIso', 'Code ISO (2 lettres)');
     }
 }

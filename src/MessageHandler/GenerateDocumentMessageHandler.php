@@ -8,6 +8,7 @@ use App\Message\GenerateDocumentMessage;
 use App\Repository\DocumentRepository;
 use App\Service\DocumentContentGenerator;
 use App\Service\PdfGeneratorService;
+use App\Service\QuotaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -20,6 +21,7 @@ class GenerateDocumentMessageHandler
         private DocumentRepository $documentRepository,
         private DocumentContentGenerator $contentGenerator,
         private PdfGeneratorService $pdfGenerator,
+        private QuotaService $quotaService,
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
         #[Autowire('%kernel.project_dir%/public/uploads/documents')] private string $documentsDir
@@ -61,14 +63,8 @@ class GenerateDocumentMessageHandler
             $document->setPdfPath('uploads/documents/' . $fileName);
             $document->setStatus(DocumentStatus::COMPLETED);
 
-            // Increment user quota (simplified logic here, ideally in a separate service)
-            $user = $document->getUser();
-            foreach ($user->getUsageQuotas() as $quota) {
-                 if ($quota->getMonthYear() === (new \DateTimeImmutable())->format('Y-m')) {
-                     $quota->incrementDocumentsGenerated();
-                     break;
-                 }
-            }
+            // Increment user quota
+            $this->quotaService->incrementQuota($document->getUser());
 
             $this->entityManager->flush();
             $this->logger->info("Document {$documentId} generated successfully.");
