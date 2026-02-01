@@ -9,3 +9,24 @@
 
 controllers:
     resource: routing.controllers
+
+api_login:
+    path: /api/auth/login
+    methods: ['POST']
+
+api_register:
+    path: /api/auth/register
+    controller: App\Controller\RegistrationController
+    methods: ['POST']
+
+api_me:
+    path: /api/me
+    controller: App\Controller\MeController
+    methods: ['GET']
+
+api_document_download:
+    path: /api/documents/{id}/download
+    controller: App\Controller\DownloadDocumentController
+    methods: ['GET']
+    requirements:
+        id: '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
