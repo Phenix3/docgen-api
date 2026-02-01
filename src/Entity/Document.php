@@ -19,6 +19,8 @@ use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use App\State\DocumentPostProcessor;
+
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
 #[ORM\Table(name: 'document')]
 #[ORM\HasLifecycleCallbacks]
@@ -35,7 +37,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             security: "is_granted('ROLE_USER')",
             denormalizationContext: ['groups' => ['document:create']],
-            securityMessage: "Vous devez être connecté pour créer un document"
+            securityMessage: "Vous devez être connecté pour créer un document",
+            processor: DocumentPostProcessor::class
         ),
         new Patch(
             security: "is_granted('ROLE_USER') and object.getUser() == user and object.isEditable()",
