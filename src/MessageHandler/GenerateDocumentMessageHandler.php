@@ -6,7 +6,7 @@ use App\Entity\Document;
 use App\Enum\DocumentStatus;
 use App\Message\GenerateDocumentMessage;
 use App\Repository\DocumentRepository;
-use App\Service\DocumentContentGenerator;
+use App\Service\Document\DocumentGenerator;
 use App\Service\PdfGeneratorService;
 use App\Service\QuotaService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,7 +19,7 @@ class GenerateDocumentMessageHandler
 {
     public function __construct(
         private DocumentRepository $documentRepository,
-        private DocumentContentGenerator $contentGenerator,
+        private DocumentGenerator $documentGenerator,
         private PdfGeneratorService $pdfGenerator,
         private QuotaService $quotaService,
         private EntityManagerInterface $entityManager,
@@ -39,14 +39,17 @@ class GenerateDocumentMessageHandler
         }
 
         try {
-            // Update status to generating
-            $document->setStatus(DocumentStatus::GENERATING);
-            $this->entityManager->flush();
+            // 1. Generate Content (AI)
+            // Note: DocumentGenerator handles status updates (PENDING -> GENERATING) and quota checks internally
+            // It also saves the generated content to the document entity
+            $this->documentGenerator->generate($document);
 
-            // 1. Generate Content
-            $htmlContent = $this->contentGenerator->generate($document);
-            $document->setGeneratedContent($htmlContent);
-            $document->setGeneratedAt(new \DateTimeImmutable());
+            // If generation failed (e.g. quota exceeded inside generator), we stop here
+            if ($document->getStatus() === DocumentStatus::FAILED) {
+                return;
+            }
+
+            $htmlContent = $document->getGeneratedContent();
 
             // 2. Generate PDF
             $slug = $document->getDocumentType()->getSlug();

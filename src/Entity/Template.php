@@ -58,6 +58,14 @@ class Template
     #[Groups(['template:read'])]
     private string $contentStructure;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['template:read'])]
+    private ?string $systemPrompt = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['template:read'])]
+    private ?string $userPromptTemplate = null;
+
     #[ORM\Column]
     #[Groups(['template:read'])]
     private bool $isActive = true;
@@ -134,6 +142,28 @@ class Template
     public function setContentStructure(string $contentStructure): static
     {
         $this->contentStructure = $contentStructure;
+        return $this;
+    }
+
+    public function getSystemPrompt(): ?string
+    {
+        return $this->systemPrompt;
+    }
+
+    public function setSystemPrompt(?string $systemPrompt): static
+    {
+        $this->systemPrompt = $systemPrompt;
+        return $this;
+    }
+
+    public function getUserPromptTemplate(): ?string
+    {
+        return $this->userPromptTemplate;
+    }
+
+    public function setUserPromptTemplate(?string $userPromptTemplate): static
+    {
+        $this->userPromptTemplate = $userPromptTemplate;
         return $this;
     }
 
