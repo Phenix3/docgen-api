@@ -10,13 +10,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SpaController extends AbstractController
 {
-    /**
-     * Catch-all route for the SPA
-     * This must be loaded LAST to not override API routes
-     */
+    #[Route('/', name: 'spa_index')]
     #[Route(
         '/{reactRouting}',
-        name: 'spa',
+        name: 'spa_catch_all',
         requirements: ['reactRouting' => '^(?!api|_).*'],
         defaults: ['reactRouting' => null],
         priority: -1
