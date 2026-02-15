@@ -26,9 +26,9 @@ export default function Register() {
   const onSubmit = async (data) => {
     // Convert countryId to number
     data.countryId = parseInt(data.countryId, 10);
-    
+
     const result = await registerUser(data);
-    
+
     if (result.success) {
       success('Compte créé', 'Vous pouvez maintenant vous connecter');
       navigate('/login');

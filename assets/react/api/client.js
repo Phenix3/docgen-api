@@ -62,14 +62,15 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Helper to get data from Hydra response
+// Helper to get data from Hydra/JSON response
 export function getHydraData(response) {
-  return response.data['hydra:member'] || response.data;
+  if (Array.isArray(response.data)) return response.data;
+  return response.data['hydra:member'] ?? response.data['member'] ?? [];
 }
 
-// Helper to get total items from Hydra response
+// Helper to get total items from Hydra/JSON response
 export function getHydraTotalItems(response) {
-  return response.data['hydra:totalItems'] || 0;
+  return response.data['hydra:totalItems'] ?? response.data['totalItems'] ?? 0;
 }
 
 export default apiClient;
