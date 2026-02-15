@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../hooks/useAuth';
 import { useNotification } from '../hooks/useNotification';
 import { useCountries } from '../hooks/useTemplates';
 import { registerSchema } from '../utils/validators';
-import { Button, Input, Select, Alert } from '../components/common';
+import { Button, Input, Select, Alert, PhoneInput } from '../components/common';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -18,10 +18,16 @@ export default function Register() {
     register,
     handleSubmit,
     setError,
+    control,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
   });
+
+  const selectedCountryId = watch('countryId');
+  const selectedCountry = countries.find(c => String(c.id) === String(selectedCountryId));
+  const selectedCountryCode = selectedCountry?.codeIso?.toLowerCase() || 'fr';
 
   const onSubmit = async (data) => {
     // Convert countryId to number
@@ -79,15 +85,6 @@ export default function Register() {
           {...register('email')}
         />
 
-        <Input
-          label="Téléphone (optionnel)"
-          type="tel"
-          autoComplete="tel"
-          placeholder="+237 600000000"
-          error={errors.phone?.message}
-          {...register('phone')}
-        />
-
         <Select
           label="Pays"
           options={countryOptions}
@@ -95,6 +92,21 @@ export default function Register() {
           error={errors.countryId?.message}
           disabled={loadingCountries}
           {...register('countryId')}
+        />
+
+        <Controller
+          name="phone"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <PhoneInput
+              label="Téléphone (optionnel)"
+              countryCode={selectedCountryCode}
+              value={field.value}
+              onChange={field.onChange}
+              error={errors.phone?.message}
+            />
+          )}
         />
 
         <Input

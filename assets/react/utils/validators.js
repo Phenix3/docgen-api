@@ -23,7 +23,7 @@ export const registerSchema = z.object({
     .email('Email invalide'),
   phone: z
     .string()
-    .regex(/^\+?[0-9]{8,15}$/, 'Numéro de téléphone invalide')
+    .regex(/^\+[1-9]\d{6,14}$/, 'Numéro de téléphone invalide')
     .optional()
     .or(z.literal('')),
   password: z
@@ -60,7 +60,7 @@ export const profileSchema = z.object({
     .max(255, 'Le nom ne peut pas dépasser 255 caractères'),
   phone: z
     .string()
-    .regex(/^\+?[0-9]{8,15}$/, 'Numéro de téléphone invalide')
+    .regex(/^\+[1-9]\d{6,14}$/, 'Numéro de téléphone invalide')
     .optional()
     .or(z.literal('')),
 });

@@ -7,3 +7,4 @@ export { Badge } from './Badge';
 export { Spinner } from './Spinner';
 export { Alert } from './Alert';
 export { Modal } from './Modal';
+export { PhoneInput } from './PhoneInput';
