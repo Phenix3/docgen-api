@@ -35,17 +35,15 @@ class RegistrationController extends AbstractController
         $user->setPhone($data['phone'] ?? null);
         
         // Country
-        if (isset($data['countryCode'])) {
-            $country = $countryRepository->findOneBy(['codeIso' => $data['countryCode']]);
+        if (isset($data['countryId'])) {
+            $country = $countryRepository->find($data['countryId']);
             if ($country) {
                 $user->setCountry($country);
             } else {
                  return new JsonResponse(['error' => 'Country not found'], 400);
             }
         } else {
-             // Fallback default country if needed, or error
-             // For now let's assume countryCode is required
-             return new JsonResponse(['error' => 'countryCode is required'], 400);
+             return new JsonResponse(['error' => 'countryId is required'], 400);
         }
 
         // Password

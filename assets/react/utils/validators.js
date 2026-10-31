@@ -33,7 +33,7 @@ export const registerSchema = z.object({
     .string()
     .min(1, 'Veuillez confirmer le mot de passe'),
   countryId: z
-    .number()
+    .coerce.number()
     .min(1, 'Veuillez sélectionner un pays'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Les mots de passe ne correspondent pas',
